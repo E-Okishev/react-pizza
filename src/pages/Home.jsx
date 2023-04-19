@@ -4,7 +4,7 @@ import qs from 'qs';
 import {useSelector, useDispatch} from "react-redux";
 import {useNavigate} from 'react-router-dom'
 
-import {setCategoryId} from '../redux/slices/filterSlice'
+import {setCategoryId, setCurrentPage} from '../redux/slices/filterSlice'
 import Categories from "../components/Categories";
 import Sort from "../components/Sort";
 import Skeleton from "../components/PizzaBlock/Skeleton";
@@ -15,15 +15,19 @@ import {SearchContext} from "../App";
 function Home() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const {categoryId, sort} = useSelector((state) => state.filter);
+  const {categoryId, sort, currentPage} = useSelector((state) => state.filter);
 
   const {searchValue} = React.useContext(SearchContext)
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [currentPage, setCurrentPage] = React.useState(1)
+
 
   const onChangeCategory = (id) => {
     dispatch(setCategoryId(id))
+  };
+
+  const onChangePage = number => {
+    dispatch(setCurrentPage(number))
   };
 
   React.useEffect(() => {
@@ -73,7 +77,7 @@ function Home() {
       <div className="content__items">
         {isLoading ? skeletons : pizzas}
       </div>
-      <Pagination onChangePage={(number) => setCurrentPage(number)}/>
+      <Pagination currentPage={currentPage} onChangePage={onChangePage}/>
     </div>
   )
 }
